@@ -2,9 +2,9 @@ import {
   AddAccountRepository,
   LoadAccountByEmailRepository,
   UpdateAccessTokenRepository,
-} from "../../../../data/protocols/database";
-import { AccountModel } from "../../../../domain/models/account";
-import { AddAccountModel } from "../../../../domain/usecases/add-account";
+} from "../../../data/protocols/database";
+import { AccountModel } from "../../../domain/models/account";
+import { AddAccountModel } from "../../../domain/usecases/add-account";
 
 export class AccountManagerRepository
   implements
