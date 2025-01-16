@@ -1,7 +1,7 @@
 import env from "../../config/env";
 import { makeLoginValidation } from "./login-validation-factory";
 import {
-  AccountMongoRepository,
+  AccountManagerRepository,
   BcryptAdapter,
   Controller,
   DbAuthentication,
@@ -13,12 +13,12 @@ export const makeLoginController = (): Controller => {
   const salt = 12;
   const bcryptAdapter = new BcryptAdapter(salt);
   const jwtAdapter = new JwtAdapter(env.jwtSecret);
-  const accountMongoRepository = new AccountMongoRepository();
+  const accountManager = new AccountManagerRepository();
   const dbAuthentication = new DbAuthentication(
-    accountMongoRepository,
+    accountManager,
     bcryptAdapter,
     jwtAdapter,
-    accountMongoRepository
+    accountManager
   );
 
   return new LoginController(dbAuthentication, makeLoginValidation());
