@@ -53,8 +53,8 @@ const makeEncrypter = (): Encrypter => {
 };
 const makeUpdateAccessTokenRepository = (): UpdateAccessTokenRepository => {
   class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async updateAccessToken(id: string, token: string): Promise<void> {
-      return new Promise((resolve) => resolve());
+    async updateAccessToken(id: string, token: string): Promise<string> {
+      return new Promise((resolve) => resolve("valid_token"));
     }
   }
 

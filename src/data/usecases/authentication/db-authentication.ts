@@ -32,6 +32,7 @@ export class DbAuthentication implements Authentication {
           account.id,
           accessToken
         );
+
         return accessToken;
       }
     }

@@ -1,28 +1,18 @@
 import {
-  AddAccountRepository,
   LoadAccountByEmailRepository,
   UpdateAccessTokenRepository,
 } from "../../../data/protocols/database";
 import { AccountModel } from "../../../domain/models/account";
-import { AddAccountModel } from "../../../domain/usecases/add-account";
+import { axiosAdapter } from "../../../main/adapters/axios/axios-adapter";
 
 export class AccountManagerRepository
-  implements
-    AddAccountRepository,
-    LoadAccountByEmailRepository,
-    UpdateAccessTokenRepository
+  implements LoadAccountByEmailRepository, UpdateAccessTokenRepository
 {
-  async add(account: AddAccountModel): Promise<AccountModel> {
-    //user-manager-api
-    return null;
-  }
-
   async loadByEmail(email: string): Promise<AccountModel> {
-    //user-manager-api
-    return null;
+    return await axiosAdapter.get(`/get-account-by?${email}`);
   }
 
-  async updateAccessToken(id: string, token: string): Promise<void> {
-    //user-manager-api
+  async updateAccessToken(id: string, token: string): Promise<string> {
+    return await axiosAdapter.post(`/update-access-token`, { id, token });
   }
 }
