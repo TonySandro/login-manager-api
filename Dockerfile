@@ -1,7 +1,8 @@
-FROM node:12
-WORKDIR /usr/src/login-api
+FROM node:20-alpine
+
+WORKDIR /app
 COPY ./package.json .
-RUN npm install --only=prod
-COPY ./dist ./dist
-EXPOSE 5000
-CMD [ "npm run start" ]
+COPY . .
+
+RUN npm run build
+CMD ["npm", "run", "start"]
