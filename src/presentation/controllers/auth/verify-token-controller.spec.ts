@@ -1,16 +1,17 @@
 import { VerifyTokenController } from "./verify-token-controller";
-import { HttpRequest } from "../../protocols";
-import { VerifyDecodedToken } from "./../../../domain/usecases/verify-decoded-token";
+import { HttpRequest } from "./../../protocols/http";
 import {
+  badRequest,
   serverError,
   success,
   unauthorized,
-} from "../../helpers/http/http-helper";
+  VerifyDecodedToken,
+} from "./verify-token-protocols";
 
 const makeVerifyDecodedToken = (): VerifyDecodedToken => {
   class VerifyDecodedTokenStub implements VerifyDecodedToken {
     verify(token: string): any {
-      return { userId: "any_user_id" };
+      return { id: "any_user_id" };
     }
   }
   return new VerifyDecodedTokenStub();
@@ -54,10 +55,16 @@ describe("VerifyTokenController", () => {
   });
 
   test("Should return 200 if token is valid", async () => {
-    const { sut } = makeSut();
+    const { sut, verifyDecodedTokenStub } = makeSut();
+    jest.spyOn(verifyDecodedTokenStub, "verify").mockImplementationOnce(() => ({
+      valid: true,
+      payload: { id: "any_user_id" },
+    }));
 
     const httpResponse = await sut.handle(makeFakeRequest());
-    expect(httpResponse).toEqual(success({ userId: "any_user_id" }));
+    expect(httpResponse).toEqual(
+      success({ valid: true, payload: { id: "any_user_id" } })
+    );
   });
 
   test("Should return 500 if VerifyDecodedToken throws", async () => {
@@ -68,5 +75,16 @@ describe("VerifyTokenController", () => {
 
     const httpResponse = await sut.handle(makeFakeRequest());
     expect(httpResponse).toEqual(serverError(new Error()));
+  });
+
+  test("Should return 400 if token is invalid", async () => {
+    const { sut, verifyDecodedTokenStub } = makeSut();
+    jest.spyOn(verifyDecodedTokenStub, "verify").mockReturnValueOnce({
+      valid: false,
+      error: new Error("Invalid token"),
+    });
+
+    const response = await sut.handle(makeFakeRequest());
+    expect(response).toEqual(badRequest(new Error("Invalid token")));
   });
 });

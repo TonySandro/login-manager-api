@@ -1,13 +1,13 @@
-import jwt from "jsonwebtoken";
 import {
   badRequest,
+  Controller,
+  HttpRequest,
+  HttpResponse,
   serverError,
-  unauthorized,
   success,
-} from "../../helpers/http/http-helper";
-import { Controller, HttpRequest, HttpResponse } from "../../protocols";
-import env from "../../../main/config/env";
-import { VerifyDecodedToken } from "../../../domain/usecases/verify-decoded-token";
+  unauthorized,
+  VerifyDecodedToken,
+} from "./verify-token-protocols";
 
 export class VerifyTokenController implements Controller {
   constructor(private readonly verifyToken: VerifyDecodedToken) {}
@@ -22,6 +22,9 @@ export class VerifyTokenController implements Controller {
       }
 
       const decodedToken = this.verifyToken.verify(token);
+      if (!decodedToken.valid) {
+        return badRequest(decodedToken.error);
+      }
 
       return success(decodedToken);
     } catch (error) {
