@@ -7,9 +7,10 @@ import {
 } from "../../helpers/http/http-helper";
 import { Controller, HttpRequest, HttpResponse } from "../../protocols";
 import env from "../../../main/config/env";
+import { VerifyDecodedToken } from "../../../domain/usecases/verify-decoded-token";
 
-export class AuthController implements Controller {
-  constructor() {}
+export class VerifyTokenController implements Controller {
+  constructor(private readonly verifyToken: VerifyDecodedToken) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -20,14 +21,9 @@ export class AuthController implements Controller {
         return unauthorized();
       }
 
-      const accountUser = jwt.verify(token, env.jwtSecret, (err, decoded) => {
-        if (err) {
-          console.log(err);
-          return badRequest(new Error("Invalid Token"));
-        }
-      });
+      const decodedToken = this.verifyToken.verify(token);
 
-      return success(accountUser);
+      return success(decodedToken);
     } catch (error) {
       return serverError(error);
     }
