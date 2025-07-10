@@ -20,6 +20,8 @@ export class DbAuthentication implements Authentication {
       authentication.email
     );
 
+    if (!account.isConfirmed) return null;
+
     if (account) {
       const isValid = await this.hashComparer.compare(
         authentication.password,
