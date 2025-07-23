@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: login-manager
+  template:
+    metadata:
+      labels:
+        app: login-manager
+    spec:
+      containers:
+        - name: login-manager
+          image: login-manager-api:local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5050
+          env:
+            - name: BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: login-config
+                  key: BASE_URL
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: login-config
+                  key: PORT
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: login-secret
+                  key: JWT_SECRET
