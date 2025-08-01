@@ -3,5 +3,6 @@ kind: ConfigMap
 metadata:
   name: login-config
 data:
-  BASE_URL: "http://localhost:5053/api"
+  BASE_URL: "http://user-manager-service:5053/api"
   PORT:     "5050"
+  JWT_SECRET: "be1bf1abba86598a9a771db2db174293086f82e3c56904f84a6b8109f117e1b6"
